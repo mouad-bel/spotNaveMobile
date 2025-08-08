@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neytrip - Flutter Project Preparation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for better readability */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for code blocks */
+        pre {
+            background-color: #1a202c; /* Darker background for code block */
+            color: #a0aec0; /* Lighter text color for code block */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospace font for code */
+            font-size: 0.9em;
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            background-color: #edf2f7; /* Light background for inline code */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            color: #333; /* Default text color for inline code */
+        }
+        /* Remove background and specific color for code inside pre tags */
+        pre code {
+            background-color: transparent;
+            padding: 0; /* Remove padding for code inside pre */
+            border-radius: 0; /* Remove border-radius for code inside pre */
+            color: inherit; /* Inherit color from pre tag */
+        }
+        /* Style for external links */
+        a {
+            color: #4c51bf !important; /* Indigo color for links, forced with !important */
+            text-decoration: none;
+            font-weight: bold; /* Ensure links are bold */
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* Ensure code inside links inherits the link color */
+        a code {
+            color: inherit !important; /* Inherit color from parent link, forced with !important */
+        }
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                font-size: 0.95em;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 sm:p-8 lg:p-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-indigo-700 mb-8 rounded-md p-2">
+            Neytrip - Flutter Project Preparation Guide
+        </h1>
+
+        <section class="mb-8">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-indigo-300">
+                Prepare Project
+            </h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    1. Get Project Dependencies
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    Flutter projects rely on various external packages and libraries defined in their
+                    <code>pubspec.yaml</code> file. Before running the project, you must download and make these dependencies available.
+                </p>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    While in your project's root directory in the terminal, run the following command:
+                </p>
+                <pre><code class="language-bash">flutter pub get</code></pre>
+
+                <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mt-4 mb-2">Purpose:</h4>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    This command reads the <code>pubspec.yaml</code> file, fetches all the declared dependencies (packages) from the pub.dev repository, and makes them available for your project to compile and run. It ensures all necessary libraries are in place.
+                </p>
+
+                <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mb-2">Action:</h4>
+                <p class="text-gray-700 leading-relaxed">
+                    Wait for this command to complete successfully. You should see messages in your terminal indicating that packages are being downloaded, resolved, and that the process has finished.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    2. Run Flutter Application
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    Once all dependencies are successfully fetched, you can run the Flutter application. You can debug and run your project either directly from your IDE (like VS Code or Android Studio) or via the terminal.
+                </p>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    To run the application from the terminal, ensure you are still in your project's root directory and execute:
+                </p>
+                <pre><code class="language-bash">flutter run</code></pre>
+
+                <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mt-4 mb-2">Purpose:</h4>
+                <p class="text-gray-700 leading-relaxed">
+                    This command compiles your Flutter application and deploys it to a connected device or an active emulator/simulator. It then launches the app, allowing you to interact with it and see your changes in real-time (with hot reload).
+                </p>
+            </div>
+        </section>
+
+        <section class="mt-8 pt-4 border-t-2 border-indigo-300 text-center">
+            <p class="text-gray-700 leading-relaxed text-lg">
+                For more detailed information on account setup, deployment, assets, and the project's architecture and tech stack, please refer to the comprehensive
+                <a href="guide.html">Neytrip App Guide</a>.
+            </p>
+        </section>
+
+        <footer class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-300">
+            <p>&copy; 2025 Neytrip by FDelux Source. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

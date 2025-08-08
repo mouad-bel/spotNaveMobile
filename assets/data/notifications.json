@@ -1,0 +1,117 @@
+[
+  {
+    "id": "notif001",
+    "title": "New Destination Discovered! 🌍",
+    "body": "Eiffel Tower has been added to Paris. Check it out!",
+    "type": "newSpot",
+    "timestamp": "2025-01-27T14:00:00Z",
+    "isRead": false,
+    "deepLink": "/destinations/1",
+    "metadata": {
+      "spotId": "1",
+      "spotName": "Eiffel Tower",
+      "spotCity": "Paris",
+      "spotCountry": "France"
+    }
+  },
+  {
+    "id": "notif002",
+    "title": "New Virtual Tour Available! 🌀",
+    "body": "Experience Santorini Sunset in 360° with our new AR tour.",
+    "type": "virtualTour",
+    "timestamp": "2025-01-26T10:30:00Z",
+    "isRead": false,
+    "deepLink": "/destinations/2",
+    "metadata": {
+      "tourId": "2",
+      "tourName": "Santorini Sunset",
+      "location": "Santorini"
+    }
+  },
+  {
+    "id": "notif003",
+    "title": "Personalized Tip for You! 💡",
+    "body": "Perfect weather for visiting Machu Picchu this month!",
+    "type": "personalizedTip",
+    "timestamp": "2025-01-25T16:45:00Z",
+    "isRead": true,
+    "deepLink": "/destinations/3",
+    "metadata": {
+      "tipId": "3",
+      "tipTitle": "Machu Picchu Visit",
+      "tipContent": "Perfect weather for visiting Machu Picchu this month!"
+    }
+  },
+  {
+    "id": "notif004",
+    "title": "Event Alert! 📅",
+    "body": "Northern Lights viewing season starts this weekend in Iceland!",
+    "type": "eventAlert",
+    "timestamp": "2025-01-24T09:15:00Z",
+    "isRead": false,
+    "deepLink": "/destinations/4",
+    "metadata": {
+      "eventId": "4",
+      "eventName": "Northern Lights Season",
+      "eventLocation": "Iceland",
+      "eventDate": "2025-01-26T00:00:00Z"
+    }
+  },
+  {
+    "id": "notif005",
+    "title": "System Update ⚙",
+    "body": "New features available! Check out our improved map navigation.",
+    "type": "systemUpdate",
+    "timestamp": "2025-01-23T11:20:00Z",
+    "isRead": true,
+    "deepLink": "/update",
+    "metadata": {
+      "updateId": "UPDATE001",
+      "updateTitle": "Map Navigation Update",
+      "updateContent": "New features available! Check out our improved map navigation."
+    }
+  },
+  {
+    "id": "notif006",
+    "title": "New Destination Discovered! 🌍",
+    "body": "Great Wall of China has been added to Beijing. Check it out!",
+    "type": "newSpot",
+    "timestamp": "2025-01-22T13:30:00Z",
+    "isRead": false,
+    "deepLink": "/destinations/5",
+    "metadata": {
+      "spotId": "5",
+      "spotName": "Great Wall of China",
+      "spotCity": "Beijing",
+      "spotCountry": "China"
+    }
+  },
+  {
+    "id": "notif007",
+    "title": "New Virtual Tour Available! 🌀",
+    "body": "Walk through the ancient ruins of Petra with our new AR guide.",
+    "type": "virtualTour",
+    "timestamp": "2025-01-21T15:45:00Z",
+    "isRead": true,
+    "deepLink": "/destinations/6",
+    "metadata": {
+      "tourId": "6",
+      "tourName": "Petra Ruins",
+      "location": "Petra"
+    }
+  },
+  {
+    "id": "notif008",
+    "title": "Personalized Tip for You! 💡",
+    "body": "Perfect weather for visiting Niagara Falls this weekend!",
+    "type": "personalizedTip",
+    "timestamp": "2025-01-20T08:00:00Z",
+    "isRead": false,
+    "deepLink": "/destinations/8",
+    "metadata": {
+      "tipId": "8",
+      "tipTitle": "Niagara Falls Visit",
+      "tipContent": "Perfect weather for visiting Niagara Falls this weekend!"
+    }
+  }
+] 

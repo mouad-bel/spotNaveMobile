@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow access to subcollections (tokens, savedDestinations, etc.)
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Allow authenticated users to create users (for testing)
+    match /users/{userId} {
+      allow create: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read subscriptions
+    match /subscriptions/{subscriptionId} {
+      allow read: if request.auth != null;
+      // Allow authenticated users to write to subscriptions for testing
+      allow write: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read spots (destinations)
+    match /spots/{spotId} {
+      allow read: if request.auth != null;
+      // Allow admins to write to spots
+      allow write: if request.auth != null && 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // Allow authenticated users to read destinations (legacy)
+    match /destinations/{destinationId} {
+      allow read: if request.auth != null;
+      // Allow authenticated users to write to destinations for testing
+      allow write: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read and write their own notifications
+    match /notifications/{notificationId} {
+      allow read, write: if request.auth != null && 
+        (resource == null || resource.data.user_id == request.auth.uid);
+    }
+    
+    // Allow authenticated users to read test collection
+    match /test/{document} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow admins to manage admin collection
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+  }
+}

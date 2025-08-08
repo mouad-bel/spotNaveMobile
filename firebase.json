@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "spotnave",
+          "appId": "1:869071247901:android:cae38dcd134167ba4944f4",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "spotnave",
+          "configurations": {
+            "android": "1:869071247901:android:cae38dcd134167ba4944f4",
+            "ios": "1:869071247901:ios:0b36a80a639b703b4944f4",
+            "macos": "1:869071247901:ios:0b36a80a639b703b4944f4",
+            "web": "1:869071247901:web:3849ffe88fe5863b4944f4",
+            "windows": "1:869071247901:web:468322df84c884c04944f4"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "eur3",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

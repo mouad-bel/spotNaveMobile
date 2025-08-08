@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neytrip - Flutter App Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for better readability */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for code blocks */
+        pre {
+            background-color: #1a202c; /* Darker background for code block */
+            color: #a0aec0; /* Lighter text color for code block */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospace font for code */
+            font-size: 0.9em;
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            background-color: #edf2f7; /* Light background for inline code */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            color: #333; /* Default text color for inline code */
+        }
+        /* Remove background and specific color for code inside pre tags */
+        pre code {
+            background-color: transparent;
+            padding: 0; /* Remove padding for code inside pre */
+            border-radius: 0; /* Remove border-radius for code inside pre */
+            color: inherit; /* Inherit color from pre tag */
+        }
+        /* Style for external links */
+        a {
+            color: #4c51bf !important; /* Indigo color for links, forced with !important */
+            text-decoration: none;
+            font-weight: bold; /* Ensure links are bold */
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* Ensure code inside links inherits the link color */
+        a code {
+            color: inherit !important; /* Inherit color from parent link, forced with !important */
+        }
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                font-size: 0.95em;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 sm:p-8 lg:p-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-indigo-700 mb-8 rounded-md p-2">
+            Neytrip - Flutter App Guide
+        </h1>
+
+        <section class="mb-8">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-indigo-300">
+                Guide
+            </h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Account for Login
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    You can use the following dummy credentials for testing the login functionality:
+                </p>
+                <pre><code class="language-json">{
+  "email": "tonystank@example.com",
+  "password": "password"
+}</code></pre>
+                <p class="text-gray-700 leading-relaxed mt-3">
+                    Alternatively, you can refer to the official API documentation for updated login endpoints and details:
+                    <a href="https://fdelux.globeapp.dev/docs/api/auth.html#login-endpoint" target="_blank">FDelux API - Login Endpoint</a>
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Deployment
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    For all deployment steps, please follow the comprehensive guide available on the Flutter Delux documentation page:
+                    <a href="https://flutter-delux.pages.dev/docs/deployment/" target="_blank">Flutter Delux - Deployment Guide</a>
+                </p>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    In this source code, you can find configuration resources within the <code>config</code> folder. After modifying any configuration files, don't forget to <code>flutter pub get</code> before you run the following commands.
+                </p>
+
+                <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mt-4 mb-2">App ID:</h4>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    To change the application ID (package name) for your project:
+                </p>
+                <pre><code class="language-bash">dart run package_rename -p "config/package_rename_config.yaml"</code></pre>
+
+                <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mt-4 mb-2">Launcher Icon:</h4>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    To generate and update the launcher icons for your application:
+                </p>
+                <pre><code class="language-bash">dart run flutter_launcher_icons -f "config/flutter_launcher_icons.yaml"</code></pre>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Assets
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-3">
+                    This project utilizes high-quality icon resources sourced from the
+                    <a href="https://www.figma.com/community/file/1080575099434324867/vuesax-uix-icons-set-6150-free-iicon" target="_blank">Figma Community (Vuesax UIX Icons Set)</a>.
+                </p>
+                <p class="text-gray-700 leading-relaxed">
+                    Some images used in the project were custom-created by our team, while others were downloaded from
+                    <a href="https://www.pexels.com/" target="_blank">Pexels</a>, ensuring a mix of unique and high-quality visuals.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Architecture
+                </h3>
+                <p class="text-gray-700 leading-relaxed">
+                    This project adheres to the Flutter architecture principles detailed on
+                    <a href="https://flutter-delux.pages.dev/docs/architecture/e1/" target="_blank">this Flutter Delux architecture page</a>, promoting a scalable and maintainable codebase.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Modular Implementation
+                </h3>
+                <p class="text-gray-700 leading-relaxed">
+                    We have implemented modularity primarily within the presentation layer. This modular approach reflects UI components on a per-page or per-fragment basis, enhancing code organization and reusability.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Data Set
+                </h3>
+                <p class="text-700 leading-relaxed">
+                    This application consumes data from the public API provided by
+                    <a href="https://fdelux.globeapp.dev/" target="_blank">FDelux Source</a>.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-medium text-gray-700 mb-3">
+                    Tech Stack
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    Neytrip is built using a modern and efficient tech stack:
+                </p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li>
+                        <span class="font-semibold">Routing Management:</span> We utilize the
+                        <a href="https://pub.dev/packages/go_router" target="_blank">go_router</a> package to handle complex navigation and leverage its advanced features.
+                    </li>
+                    <li>
+                        <span class="font-semibold">State Management:</span> Primarily, we use
+                        <a href="https://pub.dev/packages/flutter_bloc" target="_blank">BLoC</a> for managing complex states. For simpler, smaller-scale states, we opt for <code>ValueNotifier</code>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Functional Programming:</span> For functional programming paradigms, such as implement the <code>Either</code> type, we integrate
+                        <a href="https://pub.dev/packages/fpdart" target="_blank">fpdart</a>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Local Storage:</span> For simple data storage or session management, we rely on
+                        <a href="https://pub.dev/packages/shared_preferences" target="_blank">Shared Preferences</a>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Networking:</span> To facilitate communication with APIs, the
+                        <a href="https://pub.dev/packages/http" target="_blank">http</a> package is our preferred choice for its simplicity and lightweight nature.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Connection Status:</span>
+                        <a href="https://pub.dev/packages/connectivity_plus" target="_blank">connectivity_plus</a> is used to effectively monitor and discover network connectivity status.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Object Comparison:</span> For simplified and efficient object comparison, we prefer using
+                        <a href="https://pub.dev/packages/equatable" target="_blank">equatable</a>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Singleton / Dependency Injection:</span> The
+                        <a href="https://pub.dev/packages/get_it" target="_blank">get_it</a> service locator is employed for robust dependency injection and managing singletons.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Logging:</span> We implement
+                        <a href="https://pub.dev/packages/logging" target="_blank">logging</a> specifically at the BLoC level to provide informative debugging without introducing complex code.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Spacing:</span>
+                        <a href="https://pub.dev/packages/gap" target="_blank">gap</a> is our go-to widget for handling empty space.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Network Image Handling:</span> To handle network images such as default handle error for corrupt image or broken link, we usually use
+                        <a href="https://pub.dev/packages/extended_image" target="_blank">extended_image</a>.
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-300">
+            <p>&copy; 2025 Neytrip by FDelux Source. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -43,3 +43,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Large files and directories
+*.zip
+*.vsidx
+*.wsuo
+*.db
+.vs/
+pubspec.lock
+
+# Platform specific (can be regenerated)
+/android/
+/ios/
+/macos/
+/windows/
+/linux/
+/web/
+
+# Test and utility files
+*_test.dart
+test_*.dart
+*_seeder.dart
+main_*.dart
+!main.dart

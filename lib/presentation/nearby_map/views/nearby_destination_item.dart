@@ -7,6 +7,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NearbyDestinationItem extends StatelessWidget {
   final DestinationModel destination;
@@ -26,6 +28,10 @@ class NearbyDestinationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     return GestureDetector(
       onTap: () {
         context.push('/destinations/${destination.id}');
@@ -50,20 +56,20 @@ class NearbyDestinationItem extends StatelessWidget {
                   destination.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: AppColors.textPrimary,
+                    color: AppColors.getTextPrimaryColor(isDarkMode),
                   ),
                 ),
                 Text(
                   '${destination.location.city}, ${destination.location.country}',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: AppColors.getTextSecondaryColor(isDarkMode),
                   ),
                 ),
                 const Gap(10),
@@ -74,7 +80,7 @@ class NearbyDestinationItem extends StatelessWidget {
                       allowHalfRating: true,
                       itemSize: 15,
                       itemPadding: const EdgeInsets.all(0),
-                      unratedColor: AppColors.textSecondary,
+                      unratedColor: AppColors.getTextSecondaryColor(isDarkMode),
                       itemBuilder: (context, index) => ImageIcon(
                         AssetImage(AppAssets.icons.star),
                         color: Colors.amber,
@@ -85,10 +91,10 @@ class NearbyDestinationItem extends StatelessWidget {
                     const Gap(8),
                     Text(
                       '${destination.rating}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: AppColors.getTextSecondaryColor(isDarkMode),
                       ),
                     ),
                   ],

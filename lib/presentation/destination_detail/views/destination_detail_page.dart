@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spotnav/common/app_colors.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 
 import 'detail_sheet.dart';
 import 'gallery_snippet.dart';
@@ -42,7 +44,7 @@ class _DestinationDetailsPageState extends State<DestinationDetailsPage> {
     _persistentController = _scaffoldKey.currentState?.showBottomSheet(
       (context) => DetailSheet(destination: destination),
       enableDrag: false,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
 
     // This ensures the controller is reset when the sheet is dismissed programmatically or otherwise.
@@ -69,136 +71,151 @@ class _DestinationDetailsPageState extends State<DestinationDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leadingWidth: 72,
-        leading: const CustomBackButton(),
-        actionsPadding: const EdgeInsets.only(right: 16),
-        actions: [
-          BlocBuilder<DestinationDetailBloc, DestinationDetailState>(
-            builder: (context, state) {
-              if (state is! DestinationDetailLoaded) {
-                return const SizedBox.shrink();
-              }
-              final destination = state.destination;
-              return BlocConsumer<
-                IsSavedDestinationBloc,
-                IsSavedDestinationState
-              >(
-                listener: (context, state) {
-                  if (state is IsSavedDestinationOperationSuccess) {
-                    context.read<SavedDestinationsBloc>().add(
-                      const FetchSavedDestinationsEvent(),
-                    );
-                    SnackbarUtil.showSuccess(context, state.message);
-                  }
-                  if (state is IsSavedDestinationFailed) {
-                    SnackbarUtil.showError(context, state.failure.message);
-                  }
-                },
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is ThemeLoaded ? themeState.isDarkMode : false;
+        
+        return Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            leadingWidth: 72,
+            leading: const CustomBackButton(),
+            actionsPadding: const EdgeInsets.only(right: 16),
+            actions: [
+              BlocBuilder<DestinationDetailBloc, DestinationDetailState>(
                 builder: (context, state) {
-                  final isSaved = state.isSaved;
-                  if (isSaved == null) {
-                    return const Center(child: CircularProgressIndicator());
+                  if (state is! DestinationDetailLoaded) {
+                    return const SizedBox.shrink();
                   }
-                  final icon = isSaved
-                      ? AppAssets.icons.archive.remove
-                      : AppAssets.icons.archive.add;
-                  final savedDestination = SavedDestinationModel(
-                    id: destination.id.toString(),
-                    name: destination.name,
-                    cover: destination.cover,
-                  );
-                  return IconButton.filled(
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      elevation: 8,
-                    ),
-                    onPressed: () {
-                      context.read<IsSavedDestinationBloc>().add(
-                        ToggleIsSavedStatusEvent(
-                          destination: savedDestination,
-                          isCurrentlySaved: isSaved,
+                  final destination = state.destination;
+                  return BlocConsumer<
+                    IsSavedDestinationBloc,
+                    IsSavedDestinationState
+                  >(
+                    listener: (context, state) {
+                      if (state is IsSavedDestinationOperationSuccess) {
+                        context.read<SavedDestinationsBloc>().add(
+                          const FetchSavedDestinationsEvent(),
+                        );
+                        SnackbarUtil.showSuccess(context, state.message);
+                      }
+                      if (state is IsSavedDestinationFailed) {
+                        SnackbarUtil.showError(context, state.failure.message);
+                      }
+                    },
+                    builder: (context, state) {
+                      final isSaved = state.isSaved;
+                      if (isSaved == null) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.getPrimaryColor(isDarkMode),
+                          ),
+                        );
+                      }
+                      final icon = isSaved
+                          ? AppAssets.icons.archive.remove
+                          : AppAssets.icons.archive.add;
+                      final savedDestination = SavedDestinationModel(
+                        id: destination.id.toString(),
+                        name: destination.name,
+                        cover: destination.cover,
+                      );
+                      return IconButton.filled(
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
+                          elevation: 8,
+                          shadowColor: AppColors.getShadowColor(isDarkMode),
                         ),
+                        onPressed: () {
+                          context.read<IsSavedDestinationBloc>().add(
+                            ToggleIsSavedStatusEvent(
+                              destination: savedDestination,
+                              isCurrentlySaved: isSaved,
+                            ),
+                          );
+                        },
+                        icon: ImageIcon(AssetImage(icon)),
                       );
                     },
-                    icon: ImageIcon(AssetImage(icon)),
                   );
                 },
-              );
+              ),
+            ],
+          ),
+          extendBodyBehindAppBar: true,
+          body: BlocConsumer<DestinationDetailBloc, DestinationDetailState>(
+            listener: (context, state) {
+              if (state is DestinationDetailLoaded) {
+                _showDetailSheet(state.destination);
+              }
+            },
+            builder: (context, state) {
+              if (state is DestinationDetailLoading) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.getPrimaryColor(isDarkMode),
+                  ),
+                );
+              }
+              if (state is DestinationDetailFailed) {
+                return CustomFailedSection(failure: state.failure);
+              }
+              if (state is DestinationDetailLoaded) {
+                final destination = state.destination;
+                return FractionallySizedBox(
+                  heightFactor: 0.75,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: ExtendedImage.network(
+                          destination.cover,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: MediaQuery.sizeOf(context).height * 0.1 + 20,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                                                     children: [
+                             ClipRRect(
+                               child: BackdropFilter(
+                                 filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                 child: CustomOutlinedButton(
+                                   onPressed: () {
+                                     context.push(
+                                       '/destinations/gallery',
+                                       extra: {
+                                         'title': destination.name,
+                                         'images': destination.gallery,
+                                       },
+                                     );
+                                   },
+                                   text: 'Gallery',
+                                   height: 30,
+                                   width: 100,
+                                   backgroundColor: AppColors.getCardBackgroundColor(isDarkMode).withOpacity(0.8),
+                                   foregroundColor: AppColors.getTextPrimaryColor(isDarkMode),
+                                   outlineColor: Colors.transparent,
+                                 ),
+                               ),
+                             ),
+                            const Gap(8),
+                            GallerySnippet(images: destination.gallery!),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
             },
           ),
-        ],
-      ),
-      extendBodyBehindAppBar: true,
-      body: BlocConsumer<DestinationDetailBloc, DestinationDetailState>(
-        listener: (context, state) {
-          if (state is DestinationDetailLoaded) {
-            _showDetailSheet(state.destination);
-          }
-        },
-        builder: (context, state) {
-          if (state is DestinationDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is DestinationDetailFailed) {
-            return CustomFailedSection(failure: state.failure);
-          }
-          if (state is DestinationDetailLoaded) {
-            final destination = state.destination;
-            return FractionallySizedBox(
-              heightFactor: 0.75,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ExtendedImage.network(
-                      destination.cover,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: MediaQuery.sizeOf(context).height * 0.1 + 20,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ClipRRect(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: CustomOutlinedButton(
-                              onPressed: () {
-                                context.push(
-                                  '/destinations/gallery',
-                                  extra: {
-                                    'title': destination.name,
-                                    'images': destination.gallery,
-                                  },
-                                );
-                              },
-                              text: 'Gallery',
-                              height: 30,
-                              width: 100,
-                              backgroundColor: Colors.black38,
-                              foregroundColor: Colors.white,
-                              outlineColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                        const Gap(8),
-                        GallerySnippet(images: destination.gallery!),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+        );
+      },
     );
   }
 }

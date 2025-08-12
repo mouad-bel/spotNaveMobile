@@ -6,6 +6,7 @@ import 'package:spotnav/presentation/nearby_map/cubits/nearby_radius/nearby_radi
 import 'package:spotnav/presentation/nearby_map/views/destination_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 
 class NearbyRadiusInput extends StatefulWidget {
   const NearbyRadiusInput({super.key});
@@ -56,52 +57,70 @@ class _NearbyRadiusInputState extends State<NearbyRadiusInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _radiusController,
-      onTapOutside: (event) => FocusScope.of(context).unfocus(),
-      textAlign: TextAlign.end,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        isDense: true,
-        hintText: 'Radius',
-        hintStyle: const TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-          color: Colors.black45,
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.getInputBackgroundColor(isDarkMode),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.getDividerColor(isDarkMode),
+          width: 1,
         ),
-        contentPadding: const EdgeInsets.all(0),
-        border: const OutlineInputBorder(),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: NearbyRadiusInput._borderRadius,
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: NearbyRadiusInput._borderRadius,
-          borderSide: BorderSide.none,
-        ),
-        prefixIcon: UnconstrainedBox(
-          child: ImageIcon(AssetImage(AppAssets.icons.radar), size: 20),
-        ),
-        suffixIconConstraints: const BoxConstraints(maxWidth: 30 + 46),
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'km',
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _radiusController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => _updateRadius(context),
               style: TextStyle(
-                fontWeight: FontWeight.w400,
+                color: AppColors.getTextPrimaryColor(isDarkMode),
                 fontSize: 14,
-                color: AppColors.textSecondary,
+              ),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.transparent,
+                isDense: true,
+                hintText: 'Radius (km)',
+                hintStyle: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: AppColors.getTextThinColor(isDarkMode),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
-            CustomIconButton(
-              icon: AppAssets.icons.checked,
-              onTap: () => _updateRadius(context),
-            ),
-          ],
-        ),
+          ),
+          Container(
+            width: 1,
+            height: 40,
+            color: AppColors.getDividerColor(isDarkMode),
+          ),
+          CustomIconButton(
+            onTap: () => _updateRadius(context),
+            icon: AppAssets.icons.refresh,
+            backgroundColor: AppColors.getPrimaryColor(isDarkMode),
+            foregroundColor: isDarkMode ? AppColors.darkBackground : Colors.white,
+            borderRadius: BorderRadiusGeometry.circular(12),
+            size: const Size(40, 40),
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:spotnav/common/blocs/auth/auth_bloc.dart';
-import 'package:spotnav/common/widgets/error_page.dart';
 import 'package:spotnav/core/di.dart' as di;
 import 'package:spotnav/presentation/account/views/account_fragment.dart';
 import 'package:spotnav/presentation/auth/views/login_page.dart';
@@ -23,8 +22,6 @@ import 'package:spotnav/presentation/profile/edit_profile_page.dart';
 import 'package:spotnav/presentation/saved_destinations/views/saved_destinations_page.dart';
 import 'package:spotnav/presentation/settings/settings_page.dart';
 import 'package:spotnav/presentation/subscription/views/subscription_page.dart';
-import 'package:spotnav/presentation/home/views/category_destinations_page.dart';
-import 'package:spotnav/presentation/home/bloc/category_destinations_bloc.dart';
 import 'package:spotnav/presentation/search/views/search_panel.dart';
 import 'package:spotnav/presentation/search/bloc/search_bloc.dart';
 import 'package:spotnav/presentation/destinations/views/all_destinations_page.dart';
@@ -106,6 +103,10 @@ class AppRouter {
                 path: '/account',
                 builder: (context, state) => const AccountFragment(),
               ),
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
             ],
           ),
         ],
@@ -120,10 +121,6 @@ class AppRouter {
          builder: (context, state) => const EditProfilePage(),
        ),
       GoRoute(
-        path: '/settings',
-        builder: (context, state) => const SettingsPage(),
-      ),
-      GoRoute(
         path: '/subscription',
         builder: (context, state) => const SubscriptionPage(),
       ),
@@ -131,28 +128,6 @@ class AppRouter {
         path: '/broadcast-test',
         builder: (context, state) => const BroadcastTestPage(),
       ),
-             GoRoute(
-         path: '/nearby-map',
-         builder: (context, state) {
-           // Always use Morocco as the default location
-           final address = state.extra as String? ?? 'Casablanca, Morocco';
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (context) => NearbyRadiusCubit()),
-              BlocProvider(
-                create: (context) =>
-                    CenterCoordinatesCubit(geocodingInfo: di.sl()),
-              ),
-              BlocProvider(
-                create: (context) =>
-                    NearbyDestinationsBloc(repository: di.sl()),
-              ),
-            ],
-            child: NearbyMapPage(address: address),
-          );
-        },
-      ),
-
       GoRoute(
         path: '/destinations',
         builder: (context, state) => BlocProvider(
@@ -192,18 +167,6 @@ class AppRouter {
                   ),
                 ],
                 child: DestinationDetailsPage(id: id),
-              );
-            },
-          ),
-          GoRoute(
-            path: 'category/:category',
-            builder: (context, state) {
-              final category = state.pathParameters['category']!;
-              final formattedCategory = category.replaceAll('-', ' ');
-              
-              return BlocProvider(
-                create: (context) => CategoryDestinationsBloc(destinationRepository: di.sl()),
-                child: CategoryDestinationsPage(category: formattedCategory),
               );
             },
           ),

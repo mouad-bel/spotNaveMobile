@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:spotnav/common/widgets/custom_back_button.dart';
+import 'package:spotnav/common/app_colors.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 import 'package:spotnav/data/models/destination_model.dart';
 import 'package:spotnav/data/models/location_model.dart';
 import 'package:spotnav/data/services/destination_notification_trigger.dart';
 import 'package:spotnav/core/di.dart' as di;
 import 'package:gap/gap.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BroadcastTestPage extends StatefulWidget {
   const BroadcastTestPage({super.key});
@@ -109,8 +112,11 @@ class _BroadcastTestPageState extends State<BroadcastTestPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }
@@ -119,137 +125,130 @@ class _BroadcastTestPageState extends State<BroadcastTestPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.failed,
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.getBackgroundColor(isDarkMode),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.getBackgroundColor(isDarkMode),
         elevation: 0,
         leading: const CustomBackButton(),
-        title: const Text(
+        title: Text(
           'Broadcast Test',
           style: TextStyle(
-            color: Colors.black87,
-            fontSize: 20,
+            color: AppColors.getTextPrimaryColor(isDarkMode),
             fontWeight: FontWeight.w600,
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Broadcast Notification Testing',
+            Text(
+              'Test Broadcast Notifications',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: AppColors.getTextPrimaryColor(isDarkMode),
               ),
             ),
             const Gap(8),
-            const Text(
-              'Test broadcast notifications that will be sent to ALL users in the system.',
+            Text(
+              'Send test notifications to all users to verify the broadcast system',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: AppColors.getTextSecondaryColor(isDarkMode),
               ),
             ),
             const Gap(32),
             
-            // New Destination Broadcast
-            _buildTestCard(
-              title: '🎉 New Destination Broadcast',
-              description: 'Simulate adding a new destination and notify all users',
-              onTap: _isLoading ? null : _triggerNewDestinationBroadcast,
-              icon: Icons.add_location,
-              color: Colors.blue,
+            // Test Cards
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildTestCard(
+                    title: 'New Destination Broadcast',
+                    description: 'Send a notification about a new destination to all users',
+                    icon: Icons.location_on,
+                    onTap: _triggerNewDestinationBroadcast,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const Gap(16),
+                  
+                  _buildTestCard(
+                    title: 'VR Support Broadcast',
+                    description: 'Notify users about a new destination with VR support',
+                    icon: Icons.view_in_ar,
+                    onTap: _triggerVRSupportBroadcast,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const Gap(16),
+                  
+                  _buildTestCard(
+                    title: 'General Broadcast',
+                    description: 'Send a custom notification to all users',
+                    icon: Icons.broadcast_on_personal,
+                    onTap: _triggerGeneralBroadcast,
+                    isDarkMode: isDarkMode,
+                  ),
+                ],
+              ),
             ),
             
-            const Gap(16),
-            
-            // VR Support Broadcast
-            _buildTestCard(
-              title: '🥽 VR Support Broadcast',
-              description: 'Simulate adding VR support to a destination and notify all users',
-              onTap: _isLoading ? null : _triggerVRSupportBroadcast,
-              icon: Icons.view_in_ar,
-              color: Colors.purple,
-            ),
-            
-            const Gap(16),
-            
-            // General Broadcast
-            _buildTestCard(
-              title: '📢 General Broadcast',
-              description: 'Send a general announcement to all users',
-              onTap: _isLoading ? null : _triggerGeneralBroadcast,
-              icon: Icons.broadcast_on_personal,
-              color: Colors.orange,
-            ),
-            
-            const Gap(32),
-            
+            // Loading indicator
             if (_isLoading)
-              const Center(
-                child: Column(
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.getCardBackgroundColor(isDarkMode),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.getShadowColor(isDarkMode),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    Gap(16),
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.getPrimaryColor(isDarkMode),
+                      ),
+                    ),
+                    const Gap(12),
                     Text(
-                      'Sending broadcast notification...',
+                      'Sending broadcast...',
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
+                        color: AppColors.getTextPrimaryColor(isDarkMode),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-            
-            const Gap(32),
-            
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade200),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ℹ️ How it works:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  Gap(8),
-                  Text(
-                    '• Broadcast notifications are sent to ALL users\n'
-                    '• Users with disabled notifications are skipped\n'
-                    '• Each notification includes deep links to relevant pages\n'
-                    '• Notifications are stored in Firebase for each user',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -259,62 +258,76 @@ class _BroadcastTestPageState extends State<BroadcastTestPage> {
   Widget _buildTestCard({
     required String title,
     required String description,
-    required VoidCallback? onTap,
     required IconData icon,
-    required Color color,
+    required VoidCallback onTap,
+    required bool isDarkMode,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.getCardBackgroundColor(isDarkMode),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.getShadowColor(isDarkMode),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: AppColors.getPrimaryColor(isDarkMode).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: AppColors.getPrimaryColor(isDarkMode),
+                    size: 28,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 24,
-                ),
-              ),
-              const Gap(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                const Gap(16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.getTextPrimaryColor(isDarkMode),
+                        ),
                       ),
-                    ),
-                    const Gap(4),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
+                      const Gap(4),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.getTextSecondaryColor(isDarkMode),
+                          height: 1.4,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey.shade400,
-                size: 16,
-              ),
-            ],
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.getTextThinColor(isDarkMode),
+                  size: 16,
+                ),
+              ],
+            ),
           ),
         ),
       ),

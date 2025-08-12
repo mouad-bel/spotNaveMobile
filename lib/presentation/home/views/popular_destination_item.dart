@@ -69,62 +69,57 @@ class PopularDestinationItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Content overlay
+                // Destination name
                 Positioned(
                   left: 12,
                   right: 12,
                   bottom: 12,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Destination name
-                      Text(
-                        destination.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 1),
-                              blurRadius: 3,
-                              color: Colors.black54,
-                            ),
-                          ],
+                  child: Text(
+                    destination.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0, 1),
+                          blurRadius: 2,
+                          color: Colors.black54,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      ],
+                    ),
+                  ),
+                ),
+                // Location info
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 40,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 14,
+                        color: Colors.white70,
                       ),
-                      const Gap(8),
-                      // Location info
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 14,
+                      const Gap(4),
+                      Expanded(
+                        child: Text(
+                          destination.location.address,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
                             color: Colors.white70,
-                          ),
-                          const Gap(4),
-                          Expanded(
-                            child: Text(
-                              destination.location.address,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2,
-                                    color: Colors.black54,
-                                  ),
-                                ],
+                            fontSize: 12,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 1),
+                                blurRadius: 2,
+                                color: Colors.black54,
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

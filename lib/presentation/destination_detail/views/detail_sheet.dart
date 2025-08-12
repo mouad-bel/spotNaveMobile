@@ -13,6 +13,9 @@ import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotnav/data/services/notification_service.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class DetailSheet extends StatefulWidget {
   final DestinationModel destination;
@@ -74,193 +77,185 @@ class _DetailSheetState extends State<DetailSheet> {
     }
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     final destination = widget.destination;
-    return DraggableScrollableSheet(
-      shouldCloseOnMinExtent: false,
-      initialChildSize: 0.35,
-      minChildSize: 0.35,
-      maxChildSize: 1,
-      expand: false,
-      builder: (context, scrollController) {
-        return SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Gap(16),
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-              const Gap(20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        destination.name,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is ThemeLoaded ? themeState.isDarkMode : false;
+        
+        return DraggableScrollableSheet(
+          shouldCloseOnMinExtent: false,
+          initialChildSize: 0.35,
+          minChildSize: 0.35,
+          maxChildSize: 1,
+          expand: false,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(16),
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.amber.shade50,
                         borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Row(
-                        children: [
-                          ImageIcon(
-                            AssetImage(AppAssets.icons.star),
-                            size: 15,
-                            color: Colors.amber,
-                          ),
-                          const Gap(8),
-                          Text(
-                            '${destination.rating}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '/${NumberUtil.compact(destination.reviewCount!)}',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
+                        color: AppColors.getTextSecondaryColor(isDarkMode),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              // Virtual Reality Badge and Preview Button
-              if (destination.virtualTour == true) ...[
-                const Gap(12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      // VR Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primary,
-                              AppColors.primary.withOpacity(0.8),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                  ),
+                  const Gap(24),
+                  // Destination Header Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Destination name and VR Tour in one row
+                        Row(
                           children: [
-                            Icon(
-                              Icons.view_in_ar_rounded,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                            const Gap(6),
-                            Text(
-                              'Virtual Reality',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                destination.name,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.getPrimaryColor(isDarkMode),
+                                  height: 1.1,
+                                ),
                               ),
                             ),
+                            // VR Tour button - same size as rating
+                            if (destination.virtualTour == true)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.getPrimaryColor(isDarkMode),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.getPrimaryColor(isDarkMode).withOpacity(0.2),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.visibility,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                    const Gap(6),
+                                    Text(
+                                      'VR Tour',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
-                      ),
-                      const Gap(12),
-                      // VR Preview Button
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _launchVirtualTour(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                            shadowColor: AppColors.primary.withOpacity(0.3),
+                        const Gap(12),
+                        
+                        // Rating only
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
                           ),
-                          icon: Icon(Icons.visibility, size: 18),
-                          label: Text(
-                            'Preview VR Tour',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.amber.shade300,
+                              width: 1,
                             ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.star_rounded,
+                                size: 16,
+                                color: Colors.amber.shade700,
+                              ),
+                              const Gap(6),
+                              Text(
+                                '${destination.rating}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.amber.shade800,
+                                ),
+                              ),
+                              Text(
+                                ' (${NumberUtil.compact(destination.reviewCount!)})',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.amber.shade600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  const Gap(8),
+                  LocationSection(location: destination.location),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(
+                      color: AppColors.getDividerColor(isDarkMode),
+                      height: 1,
+                    ),
+                  ),
+                  const Gap(20),
+                  CategorySection(
+                    categories: destination.category!,
+                    hasVirtualTour: destination.virtualTour == true,
+                    onVrPreview: destination.virtualTour == true ? _launchVirtualTour : null,
+                  ),
+                  const Gap(20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      destination.description!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        color: AppColors.getTextSecondaryColor(isDarkMode),
                       ),
-                    ],
+                      textAlign: TextAlign.justify,
+                    ),
                   ),
-                ),
-              ],
-              const Gap(8),
-              LocationSection(location: destination.location),
-              const Gap(10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: AppColors.textThin, height: 1),
-              ),
-              const Gap(20),
-              CategorySection(categories: destination.category!),
-              const Gap(20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  destination.description!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
-                    color: AppColors.textSecondary,
+                  const Gap(16),
+                  BestTimeToVisitSection(
+                    bestTimeToVisit: destination.bestTimeToVisit!,
                   ),
-                  textAlign: TextAlign.justify,
-                ),
+                  const Gap(20),
+                  PopularActivitiesSection(activities: destination.activities!),
+                  const Gap(20),
+                  ImageSourcesSection(sources: destination.imageSources!),
+                  const SizedBox(height: 40),
+                ],
               ),
-              const Gap(16),
-              BestTimeToVisitSection(
-                bestTimeToVisit: destination.bestTimeToVisit!,
-              ),
-              const Gap(20),
-              PopularActivitiesSection(activities: destination.activities!),
-              const Gap(20),
-              ImageSourcesSection(sources: destination.imageSources!),
-              const SizedBox(height: 40),
-            ],
-          ),
+            );
+          },
         );
       },
     );

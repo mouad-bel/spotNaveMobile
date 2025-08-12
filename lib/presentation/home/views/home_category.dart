@@ -7,7 +7,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeCategory extends StatelessWidget {
-  const HomeCategory({super.key});
+  final bool isDarkMode;
+  
+  const HomeCategory({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +23,23 @@ class HomeCategory extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'Categories',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: AppColors.textPrimary,
+                      color: AppColors.getTextPrimaryColor(isDarkMode),
                     ),
                   ),
                 ),
                 const Gap(16),
-                const SizedBox(
+                SizedBox(
                   height: 40,
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: AppColors.primary,
+                      color: AppColors.getPrimaryColor(isDarkMode),
                     ),
                   ),
                 ),
@@ -49,14 +51,14 @@ class HomeCategory extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'Categories',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: AppColors.textPrimary,
+                      color: AppColors.getTextPrimaryColor(isDarkMode),
                     ),
                   ),
                 ),
@@ -77,14 +79,24 @@ class HomeCategory extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            context.push('/destinations/category/${category.replaceAll(' ', '-')}');
+                            // Navigate to unified destinations page with category filter
+                            context.push('/destinations?filter=${category.toLowerCase()}');
                           },
                           child: Chip(
-                            label: Text(category),
-                            backgroundColor: Colors.white,
-                            side: BorderSide.none,
+                            label: Text(
+                              category,
+                              style: TextStyle(
+                                color: AppColors.getTextPrimaryColor(isDarkMode),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
+                            side: BorderSide(
+                              color: AppColors.getDividerColor(isDarkMode),
+                              width: 1,
+                            ),
                             elevation: 2,
-                            shadowColor: Colors.black.withValues(alpha: 0.1),
+                            shadowColor: AppColors.getShadowColor(isDarkMode),
                           ),
                         ),
                       );
@@ -100,14 +112,14 @@ class HomeCategory extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'Categories',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: AppColors.textPrimary,
+                      color: AppColors.getTextPrimaryColor(isDarkMode),
                     ),
                   ),
                 ),
@@ -128,14 +140,24 @@ class HomeCategory extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            context.push('/destinations/category/${category.replaceAll(' ', '-')}');
+                            // Navigate to unified destinations page with category filter
+                            context.push('/destinations?filter=${category.toLowerCase()}');
                           },
                           child: Chip(
-                            label: Text(category),
-                            backgroundColor: Colors.white,
-                            side: BorderSide.none,
+                            label: Text(
+                              category,
+                              style: TextStyle(
+                                color: AppColors.getTextPrimaryColor(isDarkMode),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
+                            side: BorderSide(
+                              color: AppColors.getDividerColor(isDarkMode),
+                              width: 1,
+                            ),
                             elevation: 2,
-                            shadowColor: Colors.black.withValues(alpha: 0.1),
+                            shadowColor: AppColors.getShadowColor(isDarkMode),
                           ),
                         ),
                       );
@@ -150,14 +172,14 @@ class HomeCategory extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   'Categories',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: AppColors.textPrimary,
+                    color: AppColors.getTextPrimaryColor(isDarkMode),
                   ),
                 ),
               ),
@@ -178,14 +200,24 @@ class HomeCategory extends StatelessWidget {
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          context.push('/destinations/category/${category.replaceAll(' ', '-')}');
+                          // Navigate to unified destinations page with category filter
+                          context.push('/destinations?filter=${category.toLowerCase()}');
                         },
                         child: Chip(
-                          label: Text(category),
-                          backgroundColor: Colors.white,
-                          side: BorderSide.none,
+                          label: Text(
+                            category,
+                            style: TextStyle(
+                              color: AppColors.getTextPrimaryColor(isDarkMode),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
+                          side: BorderSide(
+                            color: AppColors.getDividerColor(isDarkMode),
+                            width: 1,
+                          ),
                           elevation: 2,
-                          shadowColor: Colors.black.withValues(alpha: 0.1),
+                          shadowColor: AppColors.getShadowColor(isDarkMode),
                         ),
                       ),
                     );

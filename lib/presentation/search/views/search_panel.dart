@@ -63,14 +63,25 @@ class _SearchPanelState extends State<SearchPanel> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
+                      spreadRadius: 0,
                     ),
                   ],
+                  border: Border.all(
+                    color: Colors.grey.withOpacity(0.1),
+                    width: 1,
+                  ),
                 ),
                 child: TextField(
                   controller: _searchController,
@@ -78,24 +89,36 @@ class _SearchPanelState extends State<SearchPanel> {
                   decoration: InputDecoration(
                     hintText: 'Search destinations, cities, tags...',
                     hintStyle: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: AppColors.textSecondary.withOpacity(0.7),
                       fontSize: 16,
+                      fontWeight: FontWeight.w400,
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: AppColors.textSecondary,
+                    prefixIcon: Container(
+                      margin: const EdgeInsets.only(left: 4),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: AppColors.textSecondary.withOpacity(0.8),
+                        size: 22,
+                      ),
                     ),
                     suffixIcon: BlocBuilder<SearchBloc, SearchState>(
                       builder: (context, state) {
                         if (state is SearchLoading || 
                             state is SearchLoaded || 
                             state is SearchFailed) {
-                          return IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              context.read<SearchBloc>().add(const ClearSearchEvent());
-                            },
+                          return Container(
+                            margin: const EdgeInsets.only(right: 4),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.clear_rounded,
+                                color: AppColors.textSecondary.withOpacity(0.6),
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                _searchController.clear();
+                                context.read<SearchBloc>().add(const ClearSearchEvent());
+                              },
+                            ),
                           );
                         }
                         return const SizedBox.shrink();
@@ -103,13 +126,14 @@ class _SearchPanelState extends State<SearchPanel> {
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 8,
+                      vertical: 16,
+                      horizontal: 20,
                     ),
                   ),
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                   onChanged: (query) {
                     context.read<SearchBloc>().add(SearchQueryChangedEvent(query: query));

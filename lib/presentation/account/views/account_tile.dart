@@ -9,11 +9,13 @@ class AccountItem extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.nextIcon = true,
+    required this.isDarkMode,
   });
   final String icon;
   final String label;
   final void Function() onTap;
   final bool nextIcon;
+  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +28,33 @@ class AccountItem extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: AppColors.divider,
+          color: AppColors.getDividerColor(isDarkMode),
         ),
         alignment: Alignment.center,
-        child: ImageIcon(AssetImage(icon), size: 20),
+        child: ImageIcon(
+          AssetImage(icon), 
+          size: 20,
+          color: isDarkMode 
+              ? AppColors.getPrimaryColor(isDarkMode)  // Use primary color for icons in dark mode for better visibility
+              : AppColors.getTextPrimaryColor(isDarkMode), // Use normal text color in light mode
+        ),
       ),
-      title: Text(label),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: isDarkMode 
+              ? AppColors.getTextSecondaryColor(isDarkMode)  // Use secondary color for better readability in dark mode
+              : AppColors.getTextPrimaryColor(isDarkMode), // Use normal text color in light mode
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
       trailing: nextIcon
-          ? ImageIcon(AssetImage(AppAssets.icons.navigation.next), size: 20)
+          ? ImageIcon(
+              AssetImage(AppAssets.icons.navigation.next), 
+              size: 20,
+              color: AppColors.getTextThinColor(isDarkMode),
+            )
           : null,
     );
   }

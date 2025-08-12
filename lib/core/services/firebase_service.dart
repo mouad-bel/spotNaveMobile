@@ -6,6 +6,7 @@ import 'package:spotnav/data/data_sources/firebase/firebase_auth_data_source.dar
 import 'package:spotnav/data/data_sources/firebase/firebase_session_data_source.dart';
 import 'package:spotnav/data/data_sources/firebase/firebase_destination_data_source.dart';
 import 'package:spotnav/data/data_sources/firebase/firebase_saved_destination_data_source.dart';
+import 'package:spotnav/core/di_firebase.dart' as di;
 
 class FirebaseService {
   static FirebaseService? _instance;
@@ -31,32 +32,20 @@ class FirebaseService {
     }
   }
 
-  // Create data source instances
+  // Create data source instances using DI
   FirebaseAuthDataSource createAuthDataSource() {
-    return FirebaseAuthDataSourceImpl(
-      firebaseAuth: _auth,
-      firestore: _firestore,
-    );
+    return di.sl<FirebaseAuthDataSource>();
   }
 
   FirebaseSessionDataSource createSessionDataSource() {
-    return FirebaseSessionDataSourceImpl(
-      firebaseAuth: _auth,
-      firestore: _firestore,
-    );
+    return di.sl<FirebaseSessionDataSource>();
   }
 
   FirebaseDestinationDataSource createDestinationDataSource() {
-    return FirebaseDestinationDataSourceImpl(
-      firestore: _firestore,
-      firebaseAuth: _auth,
-    );
+    return di.sl<FirebaseDestinationDataSource>();
   }
 
   FirebaseSavedDestinationDataSource createSavedDestinationDataSource() {
-    return FirebaseSavedDestinationDataSourceImpl(
-      firestore: _firestore,
-      firebaseAuth: _auth,
-    );
+    return di.sl<FirebaseSavedDestinationDataSource>();
   }
 } 

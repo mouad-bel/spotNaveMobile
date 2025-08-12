@@ -5,6 +5,8 @@ import 'package:spotnav/common/app_assets.dart';
 import 'package:spotnav/common/widgets/custom_back_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spotnav/common/app_colors.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 
 class NearbySearchAddressInput extends StatefulWidget {
   final String initialAddress;
@@ -42,19 +44,27 @@ class _NearbySearchAddressInputState extends State<NearbySearchAddressInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     return TextField(
       controller: _addressController,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       onSubmitted: (_) => _onSearch(),
+      style: TextStyle(
+        color: AppColors.getTextPrimaryColor(isDarkMode),
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppColors.getInputBackgroundColor(isDarkMode),
         isDense: true,
         hintText: 'Search location',
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: 14,
-          color: Colors.black45,
+          color: AppColors.getTextThinColor(isDarkMode),
         ),
         contentPadding: const EdgeInsets.all(0),
         border: const OutlineInputBorder(),
@@ -68,14 +78,21 @@ class _NearbySearchAddressInputState extends State<NearbySearchAddressInput> {
         ),
         prefixIcon: UnconstrainedBox(
           child: IconButton.filled(
-            style: IconButton.styleFrom(backgroundColor: Colors.white),
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
+              foregroundColor: AppColors.getPrimaryColor(isDarkMode),
+            ),
             onPressed: () => context.go('/home'),
             icon: ImageIcon(AssetImage(AppAssets.icons.arrow.left), size: 20),
           ),
         ),
         suffixIcon: IconButton(
           onPressed: _onSearch,
-          icon: ImageIcon(AssetImage(AppAssets.icons.search), size: 20),
+          icon: ImageIcon(
+            AssetImage(AppAssets.icons.search), 
+            size: 20,
+            color: AppColors.getPrimaryColor(isDarkMode),
+          ),
         ),
       ),
     );

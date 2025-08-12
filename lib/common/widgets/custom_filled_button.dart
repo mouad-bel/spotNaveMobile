@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:spotnav/common/app_colors.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomFilledButton extends StatelessWidget {
   final String text;
@@ -22,6 +25,10 @@ class CustomFilledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     return SizedBox(
       width: width,
       height: height,
@@ -30,12 +37,20 @@ class CustomFilledButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
+          backgroundColor: backgroundColor ?? AppColors.getPrimaryColor(isDarkMode),
+          foregroundColor: foregroundColor ?? (isDarkMode ? AppColors.darkBackground : Colors.white),
+          elevation: 4,
+          shadowColor: AppColors.getShadowColor(isDarkMode),
         ),
         onPressed: onPressed,
         icon: icon == null ? null : ImageIcon(AssetImage(icon!), size: 15),
-        label: Text(text),
+        label: Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }

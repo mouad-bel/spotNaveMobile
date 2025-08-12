@@ -1,5 +1,7 @@
 import 'package:spotnav/common/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupListTileSection extends StatelessWidget {
   final List<Widget> children;
@@ -13,6 +15,10 @@ class GroupListTileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     final List<Widget> childrenToDisplay = [];
     if (showDivider) {
       // Dynamically build the list of children with dividers
@@ -21,7 +27,7 @@ class GroupListTileSection extends StatelessWidget {
         // Add a Divider after each child, except the last one
         if (i < children.length - 1) {
           childrenToDisplay.add(
-            const Divider(height: 1, color: AppColors.divider),
+            Divider(height: 1, color: AppColors.getDividerColor(isDarkMode)),
           );
         }
       }
@@ -32,7 +38,7 @@ class GroupListTileSection extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Material(
-        color: Colors.white,
+        color: AppColors.getCardBackgroundColor(isDarkMode),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: childrenToDisplay,

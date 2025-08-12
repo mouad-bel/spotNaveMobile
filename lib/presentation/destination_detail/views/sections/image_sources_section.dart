@@ -5,6 +5,8 @@ import 'package:gap/gap.dart';
 import 'package:linkfy_text/linkfy_text.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ImageSourcesSection extends StatefulWidget {
   final List<String> sources;
@@ -29,51 +31,56 @@ class _ImageSourcesSectionState extends State<ImageSourcesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Image Sources',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Column(
-            spacing: 6,
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is ThemeLoaded ? themeState.isDarkMode : false;
+        
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget.sources.map((e) {
-              return Row(
-                children: [
-                  const Icon(
-                    Icons.circle,
-                    size: 8,
-                    color: AppColors.textSecondary,
-                  ),
-                  const Gap(12),
-                  LinkifyText(
-                    e,
-                    linkStyle: const TextStyle(color: AppColors.primary),
-                    onTap: (link) {
-                      if (link.type == LinkType.url) _openLink(link.value!);
-                    },
-                    // style: TextStyle(
-                    //   fontWeight: FontWeight.w400,
-                    //   fontSize: 14,
-                    //   color: AppColors.textSecondary,
-                    //   decoration: TextDecoration.underline,
-                    // ),
-                  ),
-                ],
-              );
-            }).toList(),
+            children: [
+              Text(
+                'Image Sources',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: AppColors.getTextPrimaryColor(isDarkMode),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Column(
+                spacing: 6,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.sources.map((e) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.circle,
+                        size: 8,
+                        color: AppColors.getTextSecondaryColor(isDarkMode),
+                      ),
+                      const Gap(12),
+                      LinkifyText(
+                        e,
+                        linkStyle: TextStyle(color: AppColors.getPrimaryColor(isDarkMode)),
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: AppColors.getTextSecondaryColor(isDarkMode),
+                        ),
+                        onTap: (link) {
+                          if (link.type == LinkType.url) _openLink(link.value!);
+                        },
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

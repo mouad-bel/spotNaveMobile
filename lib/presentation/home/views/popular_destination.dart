@@ -5,11 +5,14 @@ import 'package:spotnav/presentation/home/bloc/popular_destination_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 import 'popular_destination_item.dart';
 
 class PopularDestination extends StatefulWidget {
-  const PopularDestination({super.key});
+  final bool isDarkMode;
+  
+  const PopularDestination({super.key, required this.isDarkMode});
 
   @override
   State<PopularDestination> createState() => _PopularDestinationState();
@@ -45,26 +48,47 @@ class _PopularDestinationState extends State<PopularDestination> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Popular Destinations',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: AppColors.textPrimary,
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Text(
+                'Popular Destinations',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: AppColors.getTextPrimaryColor(widget.isDarkMode),
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  context.push('/destinations?filter=popular');
+                },
+                child: Text(
+                  'See All',
+                  style: TextStyle(
+                    color: AppColors.getPrimaryColor(widget.isDarkMode),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        const Gap(16),
+        const Gap(8), // Reduced from 16 to 8 to make title and cards closer
         SizedBox(
-          height: 300,
+          height: 300, // Reverted back to original height
           child: BlocBuilder<PopularDestinationBloc, PopularDestinationState>(
             builder: (context, state) {
               //print('DEBUG: UI received state: ${state.runtimeType}');
               if (state is PopularDestinationLoading) {
                 //print('DEBUG: UI showing loading state');
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.getPrimaryColor(widget.isDarkMode),
+                  ),
+                );
               }
               if (state is PopularDestinationFailed) {
                 //print('DEBUG: UI showing failed state: ${state.failure.message}');

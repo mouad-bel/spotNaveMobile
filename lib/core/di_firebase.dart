@@ -24,8 +24,13 @@ import 'package:spotnav/data/services/notification_service.dart';
 import 'package:spotnav/data/services/notification_trigger_manager.dart';
 import 'package:spotnav/data/services/destination_notification_trigger.dart';
 import 'package:spotnav/presentation/home/bloc/popular_destination_bloc.dart';
+import 'package:spotnav/presentation/home/bloc/all_destinations_bloc.dart';
+import 'package:spotnav/presentation/home/bloc/todays_top_spots_bloc.dart';
 import 'package:spotnav/presentation/notifications/bloc/notification_bloc.dart';
 import 'package:spotnav/presentation/saved_destinations/bloc/saved_destinations_bloc.dart';
+import 'package:spotnav/presentation/destination_detail/blocs/is_saved/is_saved_destination_bloc.dart';
+import 'package:spotnav/presentation/search/bloc/search_bloc.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,8 +49,13 @@ Future<void> initFirebase() async {
   /// Cubit/BLoC
   sl.registerFactory(() => AuthBloc(authRepository: sl()));
   sl.registerFactory(() => PopularDestinationBloc(destinationRepository: sl()));
+  sl.registerFactory(() => AllDestinationsBloc(destinationRepository: sl()));
   sl.registerFactory(() => SavedDestinationsBloc(repository: sl()));
   sl.registerFactory(() => NotificationBloc(repository: sl(), firebaseAuth: sl()));
+  sl.registerFactory(() => IsSavedDestinationBloc(repository: sl()));
+  sl.registerFactory(() => TodaysTopSpotsBloc(destinationRepository: sl()));
+  sl.registerFactory(() => SearchBloc(destinationRepository: sl()));
+  sl.registerFactory(() => ThemeBloc());
 
   /// Firebase Repositories (using adapters for compatibility)
   sl.registerLazySingleton<AuthRepository>(

@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final bool isDarkMode;
+  
+  const HomeHeader({super.key, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +35,19 @@ class HomeHeader extends StatelessWidget {
           ),
           title: Text(
             AppConstants.appName,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: AppColors.textPrimary,
+              color: AppColors.getTextPrimaryColor(isDarkMode),
             ),
           ),
           subtitle: Text(
             'Discover amazing destinations',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: AppColors.getTextSecondaryColor(isDarkMode),
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),

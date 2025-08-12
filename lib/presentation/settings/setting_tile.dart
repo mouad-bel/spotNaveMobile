@@ -8,6 +8,7 @@ class SettingTile extends StatelessWidget {
   final void Function()? onTap;
   final bool nextIcon;
   final Widget? suffix;
+  final bool isDarkMode;
 
   const SettingTile({
     super.key,
@@ -16,6 +17,7 @@ class SettingTile extends StatelessWidget {
     this.onTap,
     this.nextIcon = true,
     this.suffix,
+    required this.isDarkMode,
   });
 
   @override
@@ -29,16 +31,30 @@ class SettingTile extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: AppColors.divider,
+          color: AppColors.getDividerColor(isDarkMode),
         ),
         alignment: Alignment.center,
-        child: ImageIcon(AssetImage(icon), size: 20),
+        child: ImageIcon(
+          AssetImage(icon), 
+          size: 20,
+          color: AppColors.getTextPrimaryColor(isDarkMode),
+        ),
       ),
-      title: Text(label),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: AppColors.getTextPrimaryColor(isDarkMode),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       trailing:
           suffix ??
           (nextIcon
-              ? ImageIcon(AssetImage(AppAssets.icons.navigation.next), size: 20)
+              ? ImageIcon(
+                  AssetImage(AppAssets.icons.navigation.next), 
+                  size: 20,
+                  color: AppColors.getTextThinColor(isDarkMode),
+                )
               : null),
     );
   }

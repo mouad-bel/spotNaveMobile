@@ -1,6 +1,8 @@
 
 import 'package:spotnav/data/models/notification_model.dart';
 import 'package:spotnav/presentation/notifications/bloc/notification_bloc.dart';
+import 'package:spotnav/common/app_colors.dart';
+import 'package:spotnav/presentation/settings/bloc/theme_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -58,21 +60,28 @@ class _NotificationPanelState extends State<NotificationPanel>
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeBloc>().state is ThemeLoaded 
+        ? (context.read<ThemeBloc>().state as ThemeLoaded).isDarkMode 
+        : false;
+        
     return DismissiblePage(
       onDismissed: () => Navigator.of(context).pop(),
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: AppColors.getBackgroundColor(isDarkMode),
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.getBackgroundColor(isDarkMode),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            icon: Icon(
+              Icons.arrow_back, 
+              color: AppColors.getTextPrimaryColor(isDarkMode)
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: const Text(
+          title: Text(
             'Notifications',
             style: TextStyle(
-              color: Colors.black87,
+              color: AppColors.getTextPrimaryColor(isDarkMode),
               fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
@@ -84,19 +93,6 @@ class _NotificationPanelState extends State<NotificationPanel>
                   return Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          _showCleanAllDialog(context);
-                        },
-                        child: Text(
-                          'Clean All',
-                          style: TextStyle(
-                            color: Colors.red[600],
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
                       if (state.unreadCount > 0)
                         TextButton(
                           onPressed: () {
@@ -105,7 +101,7 @@ class _NotificationPanelState extends State<NotificationPanel>
                           child: Text(
                             'Mark all read',
                             style: TextStyle(
-                              color: Colors.blue[600],
+                              color: AppColors.getPrimaryColor(isDarkMode),
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
                             ),
@@ -121,14 +117,14 @@ class _NotificationPanelState extends State<NotificationPanel>
         ),
         body: Column(
           children: [
-            _buildFilterSection(),
+            _buildFilterSection(isDarkMode),
             Expanded(
               child: BlocBuilder<NotificationBloc, NotificationState>(
                 builder: (context, state) {
                   if (state is NotificationLoading) {
-                    return const Center(
+                    return Center(
                       child: CircularProgressIndicator(
-                        color: Colors.blue,
+                        color: AppColors.getPrimaryColor(isDarkMode),
                       ),
                     );
                   }
@@ -141,13 +137,13 @@ class _NotificationPanelState extends State<NotificationPanel>
                           Icon(
                             Icons.error_outline,
                             size: 64,
-                            color: Colors.grey[400],
+                            color: AppColors.getTextThinColor(isDarkMode),
                           ),
                           const Gap(16),
                           Text(
                             'Unable to load notifications',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: AppColors.getTextPrimaryColor(isDarkMode),
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
@@ -156,7 +152,7 @@ class _NotificationPanelState extends State<NotificationPanel>
                           Text(
                             state.message,
                             style: TextStyle(
-                              color: Colors.grey[500],
+                              color: AppColors.getTextSecondaryColor(isDarkMode),
                               fontSize: 14,
                             ),
                             textAlign: TextAlign.center,
@@ -167,8 +163,8 @@ class _NotificationPanelState extends State<NotificationPanel>
                               context.read<NotificationBloc>().add(StartListeningToNotificationsEvent());
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue[600],
-                              foregroundColor: Colors.white,
+                              backgroundColor: AppColors.getPrimaryColor(isDarkMode),
+                              foregroundColor: isDarkMode ? AppColors.darkBackground : Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -192,13 +188,13 @@ class _NotificationPanelState extends State<NotificationPanel>
                             Icon(
                               Icons.notifications_none_outlined,
                               size: 64,
-                              color: Colors.grey[400],
+                              color: AppColors.getTextThinColor(isDarkMode),
                             ),
                             const Gap(16),
                             Text(
                               'No notifications',
                               style: TextStyle(
-                                color: Colors.grey[600],
+                                color: AppColors.getTextPrimaryColor(isDarkMode),
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -207,7 +203,7 @@ class _NotificationPanelState extends State<NotificationPanel>
                             Text(
                               'You\'re all caught up',
                               style: TextStyle(
-                                color: Colors.grey[500],
+                                color: AppColors.getTextSecondaryColor(isDarkMode),
                                 fontSize: 14,
                               ),
                             ),
@@ -216,36 +212,63 @@ class _NotificationPanelState extends State<NotificationPanel>
                       );
                     }
 
-                                         return FadeTransition(
-                       opacity: _fadeAnimation,
-                       child: ListView.builder(
-                         padding: const EdgeInsets.all(16),
-                         itemCount: _buildGroupedNotifications(filteredNotifications).length,
-                         itemBuilder: (context, index) {
-                           final group = _buildGroupedNotifications(filteredNotifications)[index];
-                           return Column(
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: [
-                               // Date header
-                               Padding(
-                                 padding: const EdgeInsets.only(bottom: 12, top: 8),
-                                 child: Text(
-                                   group['title'] as String,
-                                   style: TextStyle(
-                                     fontSize: 14,
-                                     fontWeight: FontWeight.w600,
-                                     color: Colors.grey[700],
-                                     letterSpacing: 0.5,
-                                   ),
-                                 ),
-                               ),
-                                                               // Notifications in this group
-                                ...group['notifications'] as List<Widget>,
-                             ],
-                           );
-                         },
-                       ),
-                     );
+                    return FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _buildGroupedNotifications(filteredNotifications, isDarkMode).length,
+                        itemBuilder: (context, index) {
+                          final group = _buildGroupedNotifications(filteredNotifications, isDarkMode)[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Date header
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12, top: 8),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      group['title'] as String,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.getTextPrimaryColor(isDarkMode),
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                    if (group['title'] == 'Today') ...[
+                                      const Spacer(),
+                                      BlocBuilder<NotificationBloc, NotificationState>(
+                                        builder: (context, state) {
+                                          if (state is NotificationLoaded && state.notifications.isNotEmpty) {
+                                            return TextButton(
+                                              onPressed: () {
+                                                _showCleanAllDialog(context, isDarkMode);
+                                              },
+                                              child: Text(
+                                                'Clear All',
+                                                style: TextStyle(
+                                                  color: AppColors.getFailedColor(isDarkMode),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        },
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                              // Notifications in this group
+                              ...group['notifications'] as List<Widget>,
+                            ],
+                          );
+                        },
+                      ),
+                    );
                   }
 
                   return const SizedBox.shrink();
@@ -258,14 +281,14 @@ class _NotificationPanelState extends State<NotificationPanel>
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildFilterSection(bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.getCardBackgroundColor(isDarkMode),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.getShadowColor(isDarkMode),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -273,17 +296,17 @@ class _NotificationPanelState extends State<NotificationPanel>
       ),
       child: Row(
         children: [
-          _buildFilterChip('all', 'All'),
+          _buildFilterChip('all', 'All', isDarkMode),
           const Gap(12),
-          _buildFilterChip('unread', 'Unread'),
+          _buildFilterChip('unread', 'Unread', isDarkMode),
           const Gap(12),
-          _buildFilterChip('recent', 'Recent'),
+          _buildFilterChip('recent', 'Recent', isDarkMode),
         ],
       ),
     );
   }
 
-  Widget _buildFilterChip(String filter, String label) {
+  Widget _buildFilterChip(String filter, String label, bool isDarkMode) {
     final isSelected = _selectedFilter == filter;
     return GestureDetector(
       onTap: () {
@@ -294,17 +317,23 @@ class _NotificationPanelState extends State<NotificationPanel>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[600] : Colors.grey[100],
+          color: isSelected 
+              ? AppColors.getPrimaryColor(isDarkMode) 
+              : AppColors.getInputBackgroundColor(isDarkMode),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Colors.blue[600]! : Colors.grey[300]!,
+            color: isSelected 
+                ? AppColors.getPrimaryColor(isDarkMode) 
+                : AppColors.getDividerColor(isDarkMode),
             width: 1,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey[700],
+            color: isSelected 
+                ? (isDarkMode ? AppColors.darkBackground : Colors.white) 
+                : AppColors.getTextPrimaryColor(isDarkMode),
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             fontSize: 14,
           ),
@@ -327,7 +356,7 @@ class _NotificationPanelState extends State<NotificationPanel>
     }
   }
 
-     List<Map<String, dynamic>> _buildGroupedNotifications(List<NotificationModel> notifications) {
+     List<Map<String, dynamic>> _buildGroupedNotifications(List<NotificationModel> notifications, bool isDarkMode) {
      final now = DateTime.now();
      final today = DateTime(now.year, now.month, now.day);
      final yesterday = today.subtract(const Duration(days: 1));
@@ -359,7 +388,7 @@ class _NotificationPanelState extends State<NotificationPanel>
      if (todayNotifications.isNotEmpty) {
        grouped.add({
          'title': 'Today',
-         'notifications': _buildNotificationWidgets(todayNotifications),
+         'notifications': _buildNotificationWidgets(todayNotifications, isDarkMode),
        });
      }
      
@@ -367,7 +396,7 @@ class _NotificationPanelState extends State<NotificationPanel>
      if (yesterdayNotifications.isNotEmpty) {
        grouped.add({
          'title': 'Yesterday',
-         'notifications': _buildNotificationWidgets(yesterdayNotifications),
+         'notifications': _buildNotificationWidgets(yesterdayNotifications, isDarkMode),
        });
      }
      
@@ -377,23 +406,23 @@ class _NotificationPanelState extends State<NotificationPanel>
        final notifications = otherNotifications[date]!;
        grouped.add({
          'title': _formatDate(date),
-         'notifications': _buildNotificationWidgets(notifications),
+         'notifications': _buildNotificationWidgets(notifications, isDarkMode),
        });
      }
      
      return grouped;
    }
    
-   List<Widget> _buildNotificationWidgets(List<NotificationModel> notifications) {
+   List<Widget> _buildNotificationWidgets(List<NotificationModel> notifications, bool isDarkMode) {
      return notifications.map((notification) {
        return Container(
-         margin: const EdgeInsets.only(bottom: 12),
+         margin: const EdgeInsets.only(bottom: 4), // Reduced from 12 to 4 to make notifications closer
          child: Dismissible(
            key: Key(notification.id),
            direction: DismissDirection.endToStart,
            background: Container(
              decoration: BoxDecoration(
-               color: Colors.red[50],
+               color: AppColors.getFailedColor(isDarkMode).withValues(alpha: 0.1),
                borderRadius: BorderRadius.circular(12),
              ),
              child: const Align(
@@ -408,39 +437,6 @@ class _NotificationPanelState extends State<NotificationPanel>
                ),
              ),
            ),
-           confirmDismiss: (direction) async {
-             return await showDialog(
-               context: context,
-               builder: (BuildContext context) {
-                 return AlertDialog(
-                   shape: RoundedRectangleBorder(
-                     borderRadius: BorderRadius.circular(16),
-                   ),
-                   title: const Text(
-                     'Delete notification',
-                     style: TextStyle(fontWeight: FontWeight.w600),
-                   ),
-                   content: const Text(
-                     'Are you sure you want to delete this notification?',
-                   ),
-                   actions: [
-                     TextButton(
-                       onPressed: () => Navigator.of(context).pop(false),
-                       child: const Text('Cancel'),
-                     ),
-                     ElevatedButton(
-                       onPressed: () => Navigator.of(context).pop(true),
-                       style: ElevatedButton.styleFrom(
-                         backgroundColor: Colors.red,
-                         foregroundColor: Colors.white,
-                       ),
-                       child: const Text('Delete'),
-                     ),
-                   ],
-                 );
-               },
-             );
-           },
            onDismissed: (direction) {
              // Delete notification without page reload
              context.read<NotificationBloc>().add(
@@ -466,6 +462,7 @@ class _NotificationPanelState extends State<NotificationPanel>
                );
                _handleDeepLink(context, notification);
              },
+             isDarkMode: isDarkMode,
            ),
          ),
        );
@@ -560,30 +557,42 @@ class _NotificationPanelState extends State<NotificationPanel>
      }
    }
 
-   void _showCleanAllDialog(BuildContext context) {
+   void _showCleanAllDialog(BuildContext context, bool isDarkMode) {
      showDialog(
        context: context,
        builder: (BuildContext context) {
          return AlertDialog(
+           backgroundColor: AppColors.getCardBackgroundColor(isDarkMode),
            shape: RoundedRectangleBorder(
              borderRadius: BorderRadius.circular(16),
            ),
-           title: const Text(
+           title: Text(
              'Clean All Notifications',
-             style: TextStyle(fontWeight: FontWeight.w600),
+             style: TextStyle(
+               fontWeight: FontWeight.w600,
+               color: AppColors.getTextPrimaryColor(isDarkMode),
+             ),
            ),
-           content: const Text(
+           content: Text(
              'Are you sure you want to delete all notifications? This action cannot be undone.',
+             style: TextStyle(
+               color: AppColors.getTextSecondaryColor(isDarkMode),
+             ),
            ),
            actions: [
              TextButton(
                onPressed: () => Navigator.of(context).pop(false),
-               child: const Text('Cancel'),
+               child: Text(
+                 'Cancel',
+                 style: TextStyle(
+                   color: AppColors.getTextSecondaryColor(isDarkMode),
+                 ),
+               ),
              ),
              ElevatedButton(
                onPressed: () => Navigator.of(context).pop(true),
                style: ElevatedButton.styleFrom(
-                 backgroundColor: Colors.red,
+                 backgroundColor: AppColors.getFailedColor(isDarkMode),
                  foregroundColor: Colors.white,
                ),
                child: const Text('Delete All'),
@@ -612,26 +621,32 @@ class _NotificationPanelState extends State<NotificationPanel>
 class NotificationCard extends StatelessWidget {
   final NotificationModel notification;
   final VoidCallback onTap;
+  final bool isDarkMode;
 
   const NotificationCard({
     super.key,
     required this.notification,
     required this.onTap,
+    required this.isDarkMode,
   });
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: notification.isRead ? Colors.white : Colors.blue[50],
+        color: notification.isRead 
+            ? AppColors.getCardBackgroundColor(isDarkMode) 
+            : AppColors.getPrimaryColor(isDarkMode).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: notification.isRead ? Colors.grey[200]! : Colors.blue[200]!,
+          color: notification.isRead 
+              ? AppColors.getDividerColor(isDarkMode) 
+              : AppColors.getPrimaryColor(isDarkMode).withValues(alpha: 0.3),
           width: notification.isRead ? 1 : 1.5,
         ),
         boxShadow: notification.isRead ? null : [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.1),
+            color: AppColors.getPrimaryColor(isDarkMode).withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -654,7 +669,7 @@ class NotificationCard extends StatelessWidget {
                     height: 8,
                     margin: const EdgeInsets.only(right: 12, top: 4),
                     decoration: BoxDecoration(
-                      color: Colors.blue[600],
+                      color: AppColors.getPrimaryColor(isDarkMode),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -666,7 +681,7 @@ class NotificationCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppColors.getShadowColor(isDarkMode),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -677,7 +692,7 @@ class NotificationCard extends StatelessWidget {
                     child: notification.imageUrl != null && notification.imageUrl!.isNotEmpty
                         ? (notification.type == 'profileUpdate' && notification.imageUrl!.startsWith('👤'))
                             ? Container(
-                                color: Colors.blue[50],
+                                color: AppColors.getPrimaryColor(isDarkMode).withValues(alpha: 0.1),
                                 child: Center(
                                   child: Text(
                                     notification.imageUrl!,
@@ -692,21 +707,21 @@ class NotificationCard extends StatelessWidget {
                                 loadStateChanged: (state) {
                                   if (state.extendedImageLoadState == LoadState.loading) {
                                     return Container(
-                                      color: Colors.grey[200],
-                                      child: const Center(
+                                      color: AppColors.getInputBackgroundColor(isDarkMode),
+                                      child: Center(
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          color: Colors.grey,
+                                          color: AppColors.getTextThinColor(isDarkMode),
                                         ),
                                       ),
                                     );
                                   }
                                   if (state.extendedImageLoadState == LoadState.failed) {
                                     return Container(
-                                      color: Colors.grey[200],
-                                      child: const Icon(
+                                      color: AppColors.getInputBackgroundColor(isDarkMode),
+                                      child: Icon(
                                         Icons.image_not_supported,
-                                        color: Colors.grey,
+                                        color: AppColors.getTextThinColor(isDarkMode),
                                       ),
                                     );
                                   }
@@ -714,10 +729,10 @@ class NotificationCard extends StatelessWidget {
                                 },
                               )
                         : Container(
-                            color: Colors.grey[200],
-                            child: const Icon(
+                            color: AppColors.getInputBackgroundColor(isDarkMode),
+                            child: Icon(
                               Icons.location_on,
-                              color: Colors.grey,
+                              color: AppColors.getTextThinColor(isDarkMode),
                             ),
                           ),
                   ),
@@ -738,7 +753,9 @@ class NotificationCard extends StatelessWidget {
                                   ? FontWeight.w500 
                                   : FontWeight.w600,
                                 fontSize: 15,
-                                color: notification.isRead ? Colors.black87 : Colors.black,
+                                color: notification.isRead 
+                                    ? AppColors.getTextPrimaryColor(isDarkMode) 
+                                    : AppColors.getTextPrimaryColor(isDarkMode),
                                 height: 1.3,
                               ),
                               maxLines: 2,
@@ -749,7 +766,9 @@ class NotificationCard extends StatelessWidget {
                             _formatTimestamp(notification.timestamp),
                             style: TextStyle(
                               fontSize: 12,
-                              color: notification.isRead ? Colors.grey[500] : Colors.blue[600],
+                              color: notification.isRead 
+                                  ? AppColors.getTextSecondaryColor(isDarkMode) 
+                                  : AppColors.getPrimaryColor(isDarkMode),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -760,7 +779,9 @@ class NotificationCard extends StatelessWidget {
                         notification.body,
                         style: TextStyle(
                           fontSize: 13,
-                          color: notification.isRead ? Colors.grey[600] : Colors.grey[700],
+                          color: notification.isRead 
+                              ? AppColors.getTextSecondaryColor(isDarkMode) 
+                              : AppColors.getTextSecondaryColor(isDarkMode),
                           height: 1.3,
                         ),
                         maxLines: 2,

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotnav/data/models/destination_model.dart';
 import 'package:spotnav/data/repositories/destination_repository.dart';
-import 'package:spotnav/core/errors/failures.dart';
 
 // Events
 abstract class TodaysTopSpotsEvent {}
